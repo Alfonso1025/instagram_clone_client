@@ -1,4 +1,4 @@
-import { LOCAL_SERVER } from '@env';
+import { REMOTE_SERVER } from '@env';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from './Context/AuthContext';
 import MainNavigator from './MainNavigator';
@@ -11,32 +11,54 @@ const authContext = useContext(AuthContext)
 const isAuthenticated = authContext.isAuthenticated
 const setIsAuthenticated = authContext.setIsAuthenticated
 const setToken = authContext.setToken
+const setUserId = authContext.setUserId
+const setUserName = authContext.setUserName
 
-const verifyToken = async(): Promise<string>=>{
-    
+const verifyToken = async(): Promise<boolean>=>{
+    console.log('this is the server',REMOTE_SERVER)
+
     try {
+        
         const token = await AsyncStorage.getItem('token')
+       /* await AsyncStorage.removeItem('token') 
+        setIsAuthenticated(false)  */ 
         if(token != null){
-            const checkTokenOnServer = await fetch(LOCAL_SERVER+'/dashboard/verifyToken', {
+            console.log('there is a token', token)
+            const checkTokenOnServer = await fetch(REMOTE_SERVER+'/dashboard/verifyToken', {
                 headers:{token}
             })
-            const result = await checkTokenOnServer.json()
+            let result = await checkTokenOnServer.json()
+            //result.data is a boolean
             if(result.data){
-                setIsAuthenticated(true)
-                setToken(token)
-                return 'there is a token'
+                //user is authenticated but left the app and is back
+                //the user id, stored in context, is lost. Request the id to server
+                const requestUserInfo = await fetch(REMOTE_SERVER + '/dashboard/getUser',{
+                    headers: {token}
+                })
+                result = await requestUserInfo.json()
+                if(result.code === 200){
+                    console.log(result.data)
+                    setUserId(result.data._id)
+                    setUserName(result.data.userName)
+                    setIsAuthenticated(true)
+                    setToken(token)
+                }
+                
+                return true
             }
             else if(!result.data){
                 await AsyncStorage.removeItem('token')
-                return 'token removed'
+                console.log('token removed')
+                return false
             }
         }
+       
         console.log('there is no token in local storage')
-        return 'no token'
+        return false
         
         
     } catch (error) {
-        return 'an error ocurred'
+        return false
     }
 }
 useEffect(()=>{

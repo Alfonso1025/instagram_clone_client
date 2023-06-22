@@ -4,8 +4,11 @@ export type RootStackParamList = {
         Dashboard : undefined
         Profile : undefined
         EditProfile : undefined
-        FriendProfile : undefined
         UserPost : undefined
         UserSearch : undefined
+        FriendProfileScreen : undefined
+        Chats : undefined
+        Room : undefined
+        Comments : undefined
         
 }

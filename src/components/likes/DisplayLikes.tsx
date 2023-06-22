@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../Context/AuthContext'
 import { REMOTE_SERVER } from '@env'
 import { ILike } from './LikeTypes'
+import { likeStyles } from './Styles'
 interface Props{
   arrayOfLikes : ILike[]
 }
@@ -11,15 +12,11 @@ const DisplayLikes : React.FC <Props>  = (props)=>{
     const arrayOfLikes = props.arrayOfLikes
     //local state
     const [showWhoLiked, setShowWhoLiked] = useState<boolean>(false)
-    if(arrayOfLikes.length == 0){
-        return (
-            <Text>No one has liked</Text>
-        )
-    }
+   
     return(
-        <View>
+        <View style={likeStyles.DisplayLikesConainer}>
             <TouchableOpacity onPress={()=>setShowWhoLiked(true)}>
-                <Text>Liked by {arrayOfLikes.length}</Text>
+                <Text style={likeStyles.Text}>{arrayOfLikes.length} likes</Text>
             </TouchableOpacity>
             
             { showWhoLiked &&
@@ -29,6 +26,7 @@ const DisplayLikes : React.FC <Props>  = (props)=>{
                     )
                 })
             }
+            
             
         </View>
     )

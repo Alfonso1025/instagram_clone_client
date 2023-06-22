@@ -50,6 +50,7 @@ const EditProfile : React.FC <EditScreenProps>= (props)=>{
         const sendPictureToServer = async () => {
 
            try {
+              console.log('sending picture to server: ', REMOTE_SERVER)
               if(picture == '') return false
               const response = await FileSystem.uploadAsync(REMOTE_SERVER+'/dashboard/chooseProfilePic' ,picture,{
                     headers : {token },

@@ -4,6 +4,9 @@ import { AuthContext } from '../../Context/AuthContext'
 import { REMOTE_SERVER } from '@env'
 import Post from '../Post/Post'
 import { ILike } from './LikeTypes'
+import { AntDesign } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
+import { likeStyles } from './Styles'
 interface Props{
     id : string
     collection : string
@@ -12,14 +15,7 @@ interface Props{
     setIsLiked : React.Dispatch<React.SetStateAction<boolean>>
 
 }
-const styles = StyleSheet.create({
-    buttonGrey : {
-        backgroundColor : "lightgrey"
-    },
-    buttonBlue : {
-        backgroundColor : "blue"
-    }
-})
+
 const GiveLike : React.FC <Props>  = (props)=>{
 
     //props
@@ -33,6 +29,7 @@ const GiveLike : React.FC <Props>  = (props)=>{
     const userId = authContext.userId
     const userName = authContext.userName
     //local state
+  
    //function definitions
     const findIfIsLiked = ()=>{
         try {
@@ -84,19 +81,24 @@ const GiveLike : React.FC <Props>  = (props)=>{
         findIfIsLiked()
     }, [])
     return(
-        <View>
-            { !isLiked ?
-                  <TouchableOpacity style={styles.buttonGrey}  onPress={addLike}>
-                     <Text>like</Text>
-                  </TouchableOpacity>
-                 :
-                 
-                 <TouchableOpacity style={styles.buttonBlue}  onPress={unLike}>
-                    <Text>Liked</Text>
+        <>
+            { isLiked ?
+                <TouchableOpacity   onPress={addLike}>
+                     <Octicons name="heart-fill" size={24} color="red" />
                 </TouchableOpacity>
+
+                :
+
+                <TouchableOpacity onPress={addLike}>
+                     <AntDesign name="hearto" size={24} color="black" />
+                </TouchableOpacity>
+
             }
-           
-        </View>
+        </>
+            
+            
+              
+        
     )
 }
 

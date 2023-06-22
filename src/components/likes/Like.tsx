@@ -5,6 +5,7 @@ import { REMOTE_SERVER } from '@env'
 import GiveLike from './GiveLike'
 import DisplayLikes from './DisplayLikes'
 import { ILike } from './LikeTypes'
+import { likeStyles } from './Styles'
 interface Props{
     id : string
     collection : string
@@ -19,7 +20,7 @@ const Like : React.FC <Props>  = (props)=>{
     const arrayOfLikes = props.arrayOfLikes
     console.log(arrayOfLikes)
     return(
-        <View>
+        <View style={likeStyles.mainContainer}>
             <GiveLike arrayOfLikes={arrayOfLikes} id ={id} collection = {collection} setIsLiked = {setIsLiked} isLiked={isLiked} />
             <DisplayLikes arrayOfLikes={arrayOfLikes}/> 
         </View>

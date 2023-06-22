@@ -1,9 +1,10 @@
 
-import {View, Text, Button,Image, TextInput} from 'react-native'
-
+import {View, Text, TouchableOpacity,Image, TextInput} from 'react-native'
+import { commentStyles } from './Styles'
 interface Props{
     content : string
     setContent :  React.Dispatch<React.SetStateAction<string>>
+    placeHolder : string
     fetchFunction() :  void
 }
 const TextArea: React.FC <Props>  = (props)=>{
@@ -11,6 +12,7 @@ const TextArea: React.FC <Props>  = (props)=>{
     const content= props.content
     const setContent = props.setContent
     const fetchFunction = props.fetchFunction
+    const placeHolder = props.placeHolder
  
      //local state
      
@@ -18,15 +20,17 @@ const TextArea: React.FC <Props>  = (props)=>{
   
   return(
      
-    <View>
-    <TextInput  multiline={true}
+    <View style={commentStyles.textAreaMainContainer}>
+      <TextInput  placeholder={placeHolder}
+               multiline={true}
                 numberOfLines={5}
                 onChangeText = {(value)=>{setContent(value)}}
                 value = {content}
-                
+                style = {commentStyles.textAreaInput}
                 />
-    <Button title='Send' onPress={fetchFunction}/>
-</View>
+      <TouchableOpacity onPress={fetchFunction}><Text>Post</Text></TouchableOpacity>
+    
+    </View>
            
    )
   

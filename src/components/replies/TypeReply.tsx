@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from 'react'
 import {View, Text, Button,Image, TextInput} from 'react-native'
 import { LOCAL_SERVER, REMOTE_SERVER } from '@env'
 import { AuthContext } from '../../Context/AuthContext'
-import { UserContext } from '../../Context/UserContext'
-import TextArea from '../TextArea'
+import { UserContext } from '../../Context/FriendContext'
+import TextArea from '../comments/TextArea'
 
 interface Props{
     commentId : string

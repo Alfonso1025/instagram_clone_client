@@ -1,4 +1,6 @@
 import {View, Text, TextInput, StyleSheet} from 'react-native'
+import { EvilIcons } from '@expo/vector-icons';
+import { searchStyles } from './Styles';
 interface Props{
     setCharToSearch :  React.Dispatch<React.SetStateAction<string>>
     charToSearch : string
@@ -15,11 +17,12 @@ const Search : React.FC  <Props> = (props)=>{
     const setCharToSearch = props.setCharToSearch
     const charToSearch = props.charToSearch
     return(
-            <View>
+            <View style={searchStyles.searchMainContainer}>
+                <EvilIcons name="search" size={24} color="black" />
                 <TextInput placeholder='search'
                             onChangeText={(value)=>{setCharToSearch(value)}}
                             value = {charToSearch}
-                            style = {styles.textInput}/>
+                            style = {searchStyles.input}/>
             </View>
     )
 }

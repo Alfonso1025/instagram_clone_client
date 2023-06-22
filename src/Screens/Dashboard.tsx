@@ -4,10 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useContext, useEffect, useState } from 'react'
 import {View, Text, Button,Image, FlatList} from 'react-native'
 import { AuthContext } from '../Context/AuthContext'
+import { ChatContext } from '../Context/ChatContext'
 import { ProfilePicContext } from '../Context/ProfilePicContext'
-import ProfilePicture from '../components/ProfilePicture'
+import ProfilePicture from '../components/Profile/ProfilePicture'
 import FriendsPosts from '../components/friends/FriendsPosts'
 import { LOCAL_SERVER, REMOTE_SERVER } from '@env'
+import Header from '../components/Dashboard/Header'
+import Footer from '../components/Footer/Footer'
+import { dashStyles } from '../components/Dashboard/styles'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
@@ -24,20 +29,19 @@ const Dashboard : React.FC  <DashScreenProps>= (props)=>{
     //global state
     const authContext = useContext(AuthContext)
     const setIsAuthenticated = authContext.setIsAuthenticated
-    const token = authContext.token
-    console.log('token in dashboard', token)
+    //const token = authContext.token
     const id = authContext.userId
-    console.log('id in dashboard', id)
     const userName = authContext.userName
-    console.log('name in dashboard', userName)
-    
-
+    const chatContext = useContext(ChatContext)
     const profilePicContext = useContext(ProfilePicContext)
     const setProfilePic = profilePicContext.setProfilePic
-
+   const getToken = async()=>{
+    return await AsyncStorage.getItem('token')
+   }
+   
+   
     //local state
     const [arrayOfPosts, setArrayOfPosts] = useState<IPost[]>([])
-    const [status, setStatus] = useState<string>('')
     const [errMsg, setErrMsg] = useState<string>("")
     
     //props
@@ -45,16 +49,24 @@ const Dashboard : React.FC  <DashScreenProps>= (props)=>{
 
     //function definitions
     const getProfilePicture = async():Promise<boolean>=>{
-        setStatus('LOADING')
-        try {
-            const response = await fetch(REMOTE_SERVER+'/dashboard/downloadProfilePicture', {
+        
+        try { 
+            const token = await  getToken()
+            console.log('this is the token', token)
+            if(typeof token === "string"){
+                
+                const response = await fetch(REMOTE_SERVER+'/dashboard/downloadProfilePicture', {
                 headers : {token}
 
-            })
-            const parseResponse = await response.json()
-            if(parseResponse.data){
-                setProfilePic(parseResponse.data)
+                })
+                const parseResponse = await response.json()
+                console.log('response from get profile pic',parseResponse)
+                if(parseResponse.data){
+                
+                    setProfilePic(parseResponse.data)
+                }
             }
+            
             
         } catch (error) {
             console.log(error)
@@ -77,28 +89,25 @@ const Dashboard : React.FC  <DashScreenProps>= (props)=>{
     }
 
     
+    
      useEffect(()=>{
-        getProfilePicture()
+        setTimeout(()=>{
+            getProfilePicture()
+        }, 5000)
+        
     }, [])  
     
       
 
     return(
-            <View>
-
-               
-                <Button title = 'Log Out'
-                        onPress = {logOut}/>
-                  <Button title = 'Profile'
-                        onPress = { ()=> navigation.navigate('Profile') }/>
-                <Button title = 'userSearch'
-                        onPress = { ()=> navigation.navigate('UserSearch') }/>
-                 
-                 <ProfilePicture status= {status}/>
-                 <FriendsPosts id = {id}/>
-               
+            <View style = {dashStyles.mainContainer}>
+              
+                <Header navigation= {navigation}/>
+                <FriendsPosts id = {id} navigation={navigation}/>    
+                 <Footer navigation={navigation}/>  
+                   
             </View>
-    )
+    ) 
 }
 
 export default Dashboard

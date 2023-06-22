@@ -1,10 +1,14 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack'
 import { RootStackParamList } from '../types/rootStackParamList'
+import {REMOTE_SERVER, LOCAL_SERVER} from '@env';
 import { useState, useContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthContext } from '../Context/AuthContext'
-import {View, Text, TextInput, Button} from 'react-native'
+import {View, Text, TextInput, TouchableOpacity, Image} from 'react-native'
 import { AuthUser } from '../types/AuthUser'
+import { authStyles } from '../components/Authentication/Styles';
+
+const instagramImage = require('../components/Authentication/Assets/instagram.png')
 
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>
 
@@ -47,12 +51,13 @@ const SignUp : React.FC <SignUpScreenProps>= (props)=>{
     
         try {
             if(!validateInputs(userName, email, password)) {
+            //show the error message for 2 seconds, then come back to display sign up form
                setIsSignUpFailed(true)
                setTimeout(()=>{setIsSignUpFailed(false)}, 2000)
                 return false
             }
             const body = {userName,email, password}
-            const response = await fetch('54.162.138.235:3000/authentication/registerUser',{
+            const response = await fetch(`${REMOTE_SERVER}/authentication/registerUser`,{
             method : 'POST',
             headers:{'content-type':'application/json'},
             body : JSON.stringify(body)
@@ -89,39 +94,62 @@ const SignUp : React.FC <SignUpScreenProps>= (props)=>{
     }
    
     return(
-            <View>
-                <Text>Hello SignUp</Text>
+            <View style= {authStyles.mainContainer}>
 
-                <TextInput placeholder='name...'
+                    <View style={authStyles.imageContainer}>
+                        <Image source={instagramImage} style={authStyles.image}/>
+                    </View>
+                    <View style={authStyles.inputContainer}>
+
+                        <TextInput style = {authStyles.input}
+                            placeholder='Username'
                             maxLength={20}
                             onChangeText={(value)=>{setUserName(value)}}
                             value = {userName}/>
                             
-                <TextInput placeholder='email'
+                        <TextInput style = {authStyles.input}
+                            placeholder='Email'
                             onChangeText={(value)=>{setEmail(value)}}
                             value = {email}/>
                             
-                <TextInput placeholder='password'
+                        <TextInput style = {authStyles.input}
+                            placeholder='Password'
                             onChangeText={(value)=>{setPassword(value)}}
                             value = {password} />
+                        <TouchableOpacity style = {authStyles.mainButton}
+                                      onPress={registerUser}>
+                                    <Text style = {authStyles.mainButtonText}>
+                                        Sign Up
+                                    </Text>
 
-                <Button title = 'Send'
-                                onPress={registerUser}/>
+                        </TouchableOpacity>
+                        <View style={authStyles.footerContainer}>
 
-                <Button title = 'Log in'
-                                onPress={()=>navigation.navigate('LogIn')}/>
+                            <Text style={authStyles.footerText}>Have an account?</Text>
+
+                            <TouchableOpacity 
+                                      onPress={()=>navigation.navigate('LogIn')}>
+                                    <Text style = {authStyles.footerButtonText}>
+                                        Log In
+                                    </Text>
+
+                            </TouchableOpacity>
+
+                        </View>
                 
-                { isSignUpFailed &&
-                    <View>
-                        <Text>{errorMessage}</Text>
+                        { isSignUpFailed &&
+                        <View>
+                            <Text>{errorMessage}</Text>
+                        </View>
+                        }
+                        {
+                        isSignUpSuccessful &&
+                        <View>
+                            <Text>Your account was created succesfully!</Text>
+                        </View>
+                        }
                     </View>
-                }
-                {
-                    isSignUpSuccessful &&
-                    <View>
-                        <Text>Your account was created succesfully!</Text>
-                    </View>
-                }
+                    
 
             </View>
     )

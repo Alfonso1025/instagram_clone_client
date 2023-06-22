@@ -4,9 +4,11 @@ import { RootStackParamList } from '../types/rootStackParamList'
 import { useState, useContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthContext } from '../Context/AuthContext'
-import {View, Text, TextInput, Button} from 'react-native'
+import {View, Text, TextInput,Button,  TouchableOpacity,Image} from 'react-native'
 import { AuthUser } from '../types/AuthUser'
-import { UserContext } from '../Context/UserContext';
+import { authStyles } from '../components/Authentication/Styles';
+
+const instagramImage = require('../components/Authentication/Assets/instagram.png')
 
 type LogInScreenProps = NativeStackScreenProps<RootStackParamList, 'LogIn'>
 
@@ -64,7 +66,7 @@ const loginUser = async(): Promise<ISuccessFullResponse | boolean>=>{
         }
         const body = {email, password}
         const url = REMOTE_SERVER+'/authentication/loginUser'
-        console.log(url)
+        console.log('this is the url from login',url)
         const response = await fetch(url,{
         method : 'POST',
         headers:{'content-type':'application/json'},
@@ -99,6 +101,7 @@ const loginUser = async(): Promise<ISuccessFullResponse | boolean>=>{
     setUserId(id)
     setUserName(name)
     return loggedUser
+    
     } catch (error) {
         if(error instanceof Error){
             console.log('this is the error',error)
@@ -111,28 +114,52 @@ const loginUser = async(): Promise<ISuccessFullResponse | boolean>=>{
 }
 
     return(
-            <View>
-                <Text>Hello login</Text>
+            <View style= {authStyles.mainContainer}>
+
+                <View style={authStyles.imageContainer}>
+                    <Image source={instagramImage} style={authStyles.image}/>
+                </View>
                 
-                <TextInput placeholder='email'
+                <View style={authStyles.inputContainer}>
+                    <TextInput style = {authStyles.input}
+                            placeholder='Email'
                             onChangeText={(value)=>{setEmail(value)}}
                             value = {email}/>
                             
-                <TextInput placeholder='password'
+                    <TextInput style={authStyles.input}
+                            placeholder='Password'
                             onChangeText={(value)=>{setPassword(value)}}
                             value = {password} />
+                    <TouchableOpacity style = {authStyles.mainButton}
+                                      onPress={loginUser}>
+                                    <Text style = {authStyles.mainButtonText}>
+                                        Log In
+                                    </Text>
 
-                <Button title = 'Send'
-                                onPress={loginUser}/>
+                    </TouchableOpacity>
+                    
+                    <View style={authStyles.footerContainer}>
 
-                <Button title = 'SignUp'
-                                onPress={()=>navigation.navigate('SignUp')}/>
-                
-                { isLoginFailed &&
-                    <View>
-                        <Text>{errorMessage}</Text>
+                        <Text style={authStyles.footerText}>Dont have an account?</Text>
+
+                        <TouchableOpacity 
+                                      onPress={()=>navigation.navigate('SignUp')}>
+                                    <Text style = {authStyles.footerButtonText}>
+                                        Sign Up
+                                    </Text>
+
+                         </TouchableOpacity>
+
                     </View>
-                }
+                    
+                
+                    { isLoginFailed &&
+                        <View>
+                            <Text>{errorMessage}</Text>
+                        </View>
+                    }
+                </View>
+                
                  
             </View>
     )
