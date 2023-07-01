@@ -20,6 +20,7 @@ const EditProfile : React.FC <EditScreenProps>= (props)=>{
 
        const authcontex = useContext(AuthContext)
        const token = authcontex.token
+       const id = authcontex.userId
        //local state
        const [picture, setPicture] = useState<string>('')
        const [showErrorMess, setShowErrMess] = useState<boolean>(false)
@@ -50,6 +51,7 @@ const EditProfile : React.FC <EditScreenProps>= (props)=>{
         const sendPictureToServer = async () => {
 
            try {
+              
               console.log('sending picture to server: ', REMOTE_SERVER)
               if(picture == '') return false
               const response = await FileSystem.uploadAsync(REMOTE_SERVER+'/dashboard/chooseProfilePic' ,picture,{

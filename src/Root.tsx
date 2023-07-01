@@ -1,4 +1,4 @@
-import { REMOTE_SERVER } from '@env';
+import { LOCAL_SERVER, REMOTE_SERVER } from '@env';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from './Context/AuthContext';
 import MainNavigator from './MainNavigator';
@@ -15,24 +15,24 @@ const setUserId = authContext.setUserId
 const setUserName = authContext.setUserName
 
 const verifyToken = async(): Promise<boolean>=>{
-    console.log('this is the server',REMOTE_SERVER)
+    console.log('this is the server',LOCAL_SERVER)
 
     try {
         
         const token = await AsyncStorage.getItem('token')
-       /* await AsyncStorage.removeItem('token') 
-        setIsAuthenticated(false)  */ 
+       
         if(token != null){
             console.log('there is a token', token)
-            const checkTokenOnServer = await fetch(REMOTE_SERVER+'/dashboard/verifyToken', {
+            const checkTokenOnServer = await fetch(LOCAL_SERVER+'/dashboard/verifyToken', {
                 headers:{token}
             })
             let result = await checkTokenOnServer.json()
+            console.log('this is result', result)
             //result.data is a boolean
             if(result.data){
                 //user is authenticated but left the app and is back
                 //the user id, stored in context, is lost. Request the id to server
-                const requestUserInfo = await fetch(REMOTE_SERVER + '/dashboard/getUser',{
+                const requestUserInfo = await fetch(LOCAL_SERVER + '/dashboard/getUser',{
                     headers: {token}
                 })
                 result = await requestUserInfo.json()
@@ -58,10 +58,13 @@ const verifyToken = async(): Promise<boolean>=>{
         
         
     } catch (error) {
+        console.log('error in verify token: ', error)
         return false
     }
-}
+} 
+
 useEffect(()=>{
+    
     verifyToken()
 })
   return isAuthenticated ? <MainNavigator/> : <AuthNavigator/>

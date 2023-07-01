@@ -65,7 +65,7 @@ const loginUser = async(): Promise<ISuccessFullResponse | boolean>=>{
             return false
         }
         const body = {email, password}
-        const url = REMOTE_SERVER+'/authentication/loginUser'
+        const url = LOCAL_SERVER +'/authentication/loginUser'
         console.log('this is the url from login',url)
         const response = await fetch(url,{
         method : 'POST',
@@ -105,6 +105,10 @@ const loginUser = async(): Promise<ISuccessFullResponse | boolean>=>{
     } catch (error) {
         if(error instanceof Error){
             console.log('this is the error',error)
+            console.log('Error:', error.message); // Log the error message
+            console.log('Error stack:', error.stack); // Log the error stack trace
+            console.log('Error name:', error.name); // Log the error name/type
+             
             return false
         }
         

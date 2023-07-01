@@ -2,9 +2,10 @@
   "expo": {
     "name": "instagram_client",
     "slug": "instagram_client",
+    "description": "This a clone an Instagram clone. You can sign up and sign in. Upload multiple images in a single post. Follow and be followed by other users. Like and comment and comment posts. Chat with your friends",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/instagram2.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
